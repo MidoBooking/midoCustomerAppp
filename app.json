@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "Mido",
+    "slug": "Mido",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "AIzaSyAUe76yQq5_3m_OVGhYa_gYvnZ2YsCuB6M"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.mido11.MidoCustomer",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAUe76yQq5_3m_OVGhYa_gYvnZ2YsCuB6M"
+        }
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8f5c6f39-2554-4d93-be61-fa3a517042e5"
+      }
+    }
+  }
+}
