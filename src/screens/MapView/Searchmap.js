@@ -21,6 +21,7 @@ import * as Location from "expo-location";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import { API_URL } from "../../components/apiConfig";
+import COLORS from "../../consts/colors";
 
 const LocationMapScreen = () => {
   const navigation = useNavigation();
@@ -197,7 +198,7 @@ const LocationMapScreen = () => {
             <ActivityIndicator
               style={styles.loadingIndicator}
               size="large"
-              color="#0000ff"
+              color={COLORS.primary}
             />
           ) : (
             <MapView
@@ -364,7 +365,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: "center",
     alignItems: "center",
-
     zIndex: 999,
   },
 });

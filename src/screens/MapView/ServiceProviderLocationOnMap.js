@@ -14,6 +14,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import COLORS from "../../consts/colors";
+import { GOOGLE_MAPS_API_KEY } from "../../../config";
 
 const ServicePorviderOnMapScreen = () => {
   const navigation = useNavigation();
@@ -107,7 +108,7 @@ const ServicePorviderOnMapScreen = () => {
               longitude: userLocation.longitude,
             }}
             destination={{ latitude: destLatitude, longitude: destLongitude }}
-            apikey={"AIzaSyAUe76yQq5_3m_OVGhYa_gYvnZ2YsCuB6M"}
+            apikey={GOOGLE_MAPS_API_KEY}
             strokeWidth={3}
             strokeColor="hotpink"
           />

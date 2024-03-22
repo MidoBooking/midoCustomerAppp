@@ -94,10 +94,6 @@ const App = () => {
       if (data.length === 0) {
         setHasMoreItems(false);
       }
-      console.log(
-        `Total items after page ${page}:`,
-        users.length + data.length
-      );
     } catch (error) {
       console.error("Error fetching data:", error.message);
     } finally {
@@ -109,7 +105,6 @@ const App = () => {
   useEffect(() => {
     // Check if userLocation is available before fetching data
     if (!userLocation || !userLocation.latitude || !userLocation.longitude) {
-      console.log("User location is not available. Skipping data fetch.");
       return;
     }
     <LocationHandler />;
@@ -129,7 +124,6 @@ const App = () => {
   // Function to render each user item in the list
   const renderUserItem = ({ item }) => {
     const handleUserDetailsNavigation = () => {
-      console.log("Item Data:", item.latitudeOnDatabase); // Log the item data
       navigation.navigate("UserDetails", {
         userData: item,
         distance: item.distance,

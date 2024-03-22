@@ -15,7 +15,6 @@ const LocationHandler = () => {
         }
 
         let location = await Location.getCurrentPositionAsync({});
-        console.log("Current Location:", location);
 
         // Dispatch the location to the combined Redux store
         dispatch(setLocation(location.coords));

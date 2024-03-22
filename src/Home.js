@@ -47,7 +47,7 @@ const HomeScreen = () => {
   const [loadingUserData, setLoadingUserData] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
   const [overlayVisible, setOverlayVisible] = useState(false); // State variable for overlay
-  console.log("user id from home is", userId);
+
   // Function to toggle popup visibility
   const togglePopupVisibility = (visible) => {
     setPopupVisible(visible);
@@ -255,7 +255,6 @@ const HomeScreen = () => {
 
   const handleBookingItem = async (bookingItem) => {
     try {
-      console.log("booking item is ", bookingItem);
       setLoadingUserData(true);
 
       const response = await axios.get(
@@ -278,7 +277,6 @@ const HomeScreen = () => {
             />
           ),
         });
-        console.log("my stylist", myStylistClicked);
       } else {
         console.error(`Unexpected status code: ${response.status}`);
       }

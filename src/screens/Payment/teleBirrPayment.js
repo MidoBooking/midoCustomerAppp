@@ -84,7 +84,7 @@ const TeleBirrPayment = () => {
         outTradeNo: outTradeNo,
         receiveName: "BOLD TECHNOLOGIES",
         returnApp: `${API_URL}/notifyUrl`,
-        returnUrl: `${API_URL}/notifyUr`,
+        returnUrl: `${API_URL}/notifyUrl`,
         subject:
           "Half payment for " +
           selectedServices.join(", ") +

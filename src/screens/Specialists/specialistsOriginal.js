@@ -140,8 +140,6 @@ const ServiceProviderList = () => {
         .then((response) => response.json())
         .then((data) => {
           // Handle the response from the server (e.g., success or error)
-          console.log("Booking response:", data);
-
           // Optionally, you can add code to navigate to a confirmation screen or perform other actions after booking.
         })
         .catch((error) => {

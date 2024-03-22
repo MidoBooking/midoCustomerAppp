@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Mido",
-    "slug": "Mido",
+    "name": "Mido Customer",
+    "slug": "MidoCustomer",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -23,7 +23,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.mido11.MidoCustomer",
+      "package": "com.midobooking.MidoCustomer",
+      "versionCode": "1",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyAUe76yQq5_3m_OVGhYa_gYvnZ2YsCuB6M"

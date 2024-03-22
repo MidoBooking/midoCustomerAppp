@@ -82,7 +82,6 @@ export default function Appointments({ route }) {
             }));
 
           setBookingsList(bookings);
-          console.log(bookings);
         }
       },
       (error) => {
@@ -130,11 +129,8 @@ export default function Appointments({ route }) {
     );
   };
 
-  const handleEdit = () => {
-    console.log("edit appointment");
-  };
+  const handleEdit = () => {};
   const handleAppointmentPress = (appointment) => {
-    console.log("Selected Booking on Press:", appointment.id);
     setSelectedBooking(appointment);
     setModalVisible(true);
   };

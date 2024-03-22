@@ -60,7 +60,6 @@ const LocationHandler = () => {
       try {
         let location = await Location.getCurrentPositionAsync({});
         dispatch(setLocation(location.coords));
-        console.log("Location successfully obtained:", location.coords);
       } catch (error) {
         console.error("Error fetching location:", error.message);
       }

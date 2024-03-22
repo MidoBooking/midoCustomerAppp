@@ -28,7 +28,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 const ServiceProviderList = () => {
   const userId = useSelector((state) => state.user.userId);
-  console.log("client id is ", userId);
+
   const [serviceProviders, setServiceProviders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingBooking, setIsLoadingBooking] = useState(false);
@@ -74,9 +74,7 @@ const ServiceProviderList = () => {
   const businessPhoneNumber = route.params?.businessPhoneNumber;
   const selectedBookingId = route.params?.selectedBookingId;
   const [selectedTimeSlotColor, setSelectedTimeSlotColor] = useState("#3F66DA"); // Set the initial color
-  // console.log("selected service duraito is ", serviceDuration);
-  // console.log("image url from specialsit page is", imageUrl);
-  // console.log(businessOwnerId);
+
   const handleServiceProviderSelect = (provider) => {
     setSelectedServiceProviderId(provider.serviceProviderId);
     setSelectedBusinessOwnerId(businessOwnerId);
@@ -87,16 +85,12 @@ const ServiceProviderList = () => {
     setSelectedEndTime(null);
     setSelectedTimeSlot(null);
 
-    // Set the new selected service provider
     setSelectedServiceProvider(provider);
-
-    // Log the selected values
   };
 
   const handleTimeSlotSelect = (timeSlot) => {
     const formattedTimeSlot = getFormattedTime(moment(timeSlot, "hh:mm A "));
     setSelectedTimeSlot(formattedTimeSlot);
-    // console.log("selectedTimeSlot", formattedTimeSlot);
   };
 
   useEffect(() => {
@@ -110,7 +104,6 @@ const ServiceProviderList = () => {
 
         setServiceProviders(filteredServiceProviders);
         setIsLoading(false);
-        // console.log("service providers is", filteredServiceProviders);
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
@@ -231,8 +224,6 @@ const ServiceProviderList = () => {
         currentTimeSlot.add(15, "minutes");
       }
 
-      // console.log("calculated time slots:", timeSlots);
-
       return timeSlots;
     }
 
@@ -304,14 +295,11 @@ const ServiceProviderList = () => {
 
     setSelectedStartTime(startWorkingHour.format("HH:mm")); // Set in 24-hour format
     setSelectedEndTime(endWorkingHour.format("HH:mm"));
-    // console.log(`User selected day: ${day}`);
 
     // Format the date as "DD/MM/YYYY" and update the selectedCalendar state
     const currentDate = moment().add(filteredWeekDays.indexOf(day), "days");
     const formattedDate = currentDate.format("DD/MM/YYYY");
     setSelectedCalendar((prevSelectedCalendar) => {
-      // console.log("Previous selected calendar", prevSelectedCalendar);
-      // console.log("New selected calendar", formattedDate);
       return formattedDate;
     });
   };
@@ -333,7 +321,6 @@ const ServiceProviderList = () => {
           });
 
           const data = await response.json();
-          // console.log("Booking Data:", data);
 
           if (data && data.bookings && data.bookings.length > 0) {
             // Filter bookings based on the 'approved' field
@@ -344,17 +331,7 @@ const ServiceProviderList = () => {
             setAllBookedBookings(allBookedBookings);
             setBookingDataFromDatabase(approvedBookings);
 
-            data.bookings.forEach((bookedData, index) => {
-              // console.log(`Booking ${index + 1}:`);
-              // console.log(
-              //   "Selected Time Slot from database:",
-              //   bookedData.selectedTimeSlot
-              // );
-              // console.log(
-              //   "Selected End Time from database",
-              //   bookedData.selectedEndTime
-              // );
-            });
+            data.bookings.forEach((bookedData, index) => {});
           } else {
             console.log(
               "No matching bookings found for the specified criteria."
@@ -449,22 +426,8 @@ const ServiceProviderList = () => {
 
         // Check for double booking
         // Check for double booking
-        console.log("Checking for double booking...");
-        const isDoubleBooking = allBookedBookings.some((booking) => {
-          console.log("booking.selectedCalendar:", booking.selectedCalendar);
-          console.log("selectedCalendar:", selectedCalendar);
-          console.log("booking.selectedTimeSlot:", booking.selectedTimeSlot);
-          console.log("selectedTimeSlot:", selectedTimeSlot);
-          console.log("booking.businessOwnerId:", booking.businessOwnerId);
-          console.log("businessOwnerId:", businessOwnerId);
-          console.log("booking.serviceProviderId:", booking.serviceProviderId);
-          console.log(
-            "selectedServiceProvider.serviceProviderId:",
-            selectedServiceProvider.serviceProviderId
-          );
-          console.log("booking.userId:", booking.userId);
-          console.log("userId:", userId);
 
+        const isDoubleBooking = allBookedBookings.some((booking) => {
           return (
             booking.selectedCalendar === selectedCalendar &&
             booking.selectedTimeSlot === selectedTimeSlot &&
@@ -475,11 +438,9 @@ const ServiceProviderList = () => {
           );
         });
 
-        console.log("Is double booking?", isDoubleBooking);
-
         if (isDoubleBooking) {
           // Show alert for double booking
-          console.log("Double booking detected!");
+
           Alert.alert(
             "Double Booking Detected",
             "You already have another pending appointment with the same day, time slot, and service provider.",
@@ -491,11 +452,9 @@ const ServiceProviderList = () => {
           setIsLoadingBooking(false);
 
           // Show the confirmation modal
-          console.log("No double booking. Showing confirmation modal...");
+
           setIsConfirmationModalVisible(true);
         }
-
-        console.log("Is double booking?", isDoubleBooking);
 
         if (isDoubleBooking) {
           // Show alert for double booking
@@ -555,7 +514,7 @@ const ServiceProviderList = () => {
       );
 
       // Handle success
-      console.log("Booking updated successfully");
+
       navigation.navigate("appointmentUpdated");
     } catch (error) {
       // Handle error
@@ -574,7 +533,7 @@ const ServiceProviderList = () => {
       businessOwnerId: selectedBusinessOwnerId,
       serviceProviderId: selectedServiceProviderId,
     };
-    console.log("log data is", requestData);
+
     try {
       // Send data to the server
       const response = await fetch(`${API_URL}/marketing`, {
@@ -599,12 +558,8 @@ const ServiceProviderList = () => {
     // Perform any actions you want when the user confirms the booking.
     // For example, you can navigate to a confirmation screen or display a success message.
 
-    console.log("time slot is", selectedTimeSlot);
-    console.log("name is ", clients.name);
-
     // Make the API request to submit the booking data
     if (bookingData) {
-      console.log("booking data is", bookingData);
       fetch(`${API_URL}/setBooking`, {
         method: "POST",
         headers: {
@@ -615,7 +570,7 @@ const ServiceProviderList = () => {
         .then((response) => response.json())
         .then((data) => {
           // Handle the response from the server (e.g., success or error)
-          console.log("Booking response:", bookingData);
+
           // Optionally, you can navigate to a confirmation screen or display a success message.
           sendSms();
           navigation.navigate("Congratulations", {
