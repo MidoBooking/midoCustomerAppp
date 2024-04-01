@@ -11,6 +11,7 @@ import {
   Modal,
   Button,
   PanResponder,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "react-native-vector-icons";
@@ -61,44 +62,50 @@ const UserDetailsScreen = ({ route }) => {
   };
 
   const handleBookButtonPress = () => {
-    if (selectedServices.length > 0) {
-      const selectedServiceNames = selectedServices.map(
-        (service) => service.name
+    if (selectedServices.length === 0) {
+      // If no services are selected, display an alert
+      Alert.alert(
+        "Please Select a Service",
+        "You need to select at least one service before booking."
       );
-      const selectedServicePrices = selectedServices.map((service) =>
-        parseFloat(service.price)
-      ); // Convert to numbers
-      const selectedServiceDurations = selectedServices.map((service) =>
-        parseFloat(service.duration)
-      ); // Convert to numbers
-
-      // Calculate the total price by summing selected prices
-      const totalPrice = selectedServicePrices.reduce(
-        (acc, price) => acc + price,
-        0
-      );
-
-      // Calculate the total duration by summing selected durations
-      const totalDuration = selectedServiceDurations.reduce(
-        (acc, duration) => acc + duration,
-        0
-      );
-
-      console.log("Selected Service Names:", selectedServiceNames);
-      console.log("Total Price:", totalPrice);
-      console.log("Total Duration:", totalDuration);
-
-      navigation.navigate("EmployeeList", {
-        sourceComponent: "userDetails",
-        userId: userData.id,
-        serviceDuration: totalDuration,
-        selectedServiceNames: selectedServiceNames,
-        businessName: userData.businessName,
-        businessPhoneNumber: userData.phoneNumber,
-        imageUrl: userData.businessPicture,
-        totalPrice: totalPrice,
-      });
+      return; // Exit the function early
     }
+
+    // If at least one service is selected, proceed with booking
+    const selectedServiceNames = selectedServices.map(
+      (service) => service.name
+    );
+    const selectedServicePrices = selectedServices.map((service) =>
+      parseFloat(service.price)
+    );
+    const selectedServiceDurations = selectedServices.map((service) =>
+      parseFloat(service.duration)
+    );
+
+    const totalPrice = selectedServicePrices.reduce(
+      (acc, price) => acc + price,
+      0
+    );
+
+    const totalDuration = selectedServiceDurations.reduce(
+      (acc, duration) => acc + duration,
+      0
+    );
+
+    console.log("Selected Service Names:", selectedServiceNames);
+    console.log("Total Price:", totalPrice);
+    console.log("Total Duration:", totalDuration);
+
+    navigation.navigate("EmployeeList", {
+      sourceComponent: "userDetails",
+      userId: userData.id,
+      serviceDuration: totalDuration,
+      selectedServiceNames: selectedServiceNames,
+      businessName: userData.businessName,
+      businessPhoneNumber: userData.phoneNumber,
+      imageUrl: userData.businessPicture,
+      totalPrice: totalPrice,
+    });
   };
 
   const handleMenuItemPress = (item) => {

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import * as Location from "expo-location";
 import { setLocation } from "../redux/locationStore";
 
 const LocationHandler = () => {
@@ -9,25 +8,42 @@ const LocationHandler = () => {
   useEffect(() => {
     const fetchLocation = async () => {
       try {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          throw new Error("Permission to access location was denied");
+        const apiKey = "AIzaSyAUe76yQq5_3m_OVGhYa_gYvnZ2YsCuB6M";
+        const response = await fetch(
+          `https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({}),
+          }
+        );
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch location: ${response.status} ${response.statusText}`
+          );
         }
-
-        let location = await Location.getCurrentPositionAsync({});
-
-        // Dispatch the location to the combined Redux store
-        dispatch(setLocation(location.coords));
+        const data = await response.json();
+        if (data && data.location) {
+          const location = {
+            latitude: data.location.lat,
+            longitude: data.location.lng,
+          };
+          console.log("Location:", location);
+          dispatch(setLocation(location));
+        } else {
+          throw new Error("Location data not found in response");
+        }
       } catch (error) {
         console.error("Error fetching location:", error.message);
-        // Handle the error gracefully, maybe show a message to the user
+        // Handle error gracefully
       }
     };
 
     fetchLocation();
   }, [dispatch]);
 
-  // You can render something here if needed, but this component is primarily for fetching location.
   return null;
 };
 

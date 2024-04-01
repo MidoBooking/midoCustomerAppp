@@ -1,24 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, TextInput, StyleSheet } from "react-native";
+import { View, TextInput, StyleSheet, Keyboard } from "react-native";
 import COLORS from "../consts/colors";
 
 const OtpInput = ({ numberOfInputs = 6, onOtpChange }) => {
   const DEFAULT_OTP = Array(numberOfInputs).fill("");
   const [otp, setOtp] = useState(DEFAULT_OTP);
+  const [focusedInput, setFocusedInput] = useState(0); // Track currently focused input
   const inputRefs = useRef([]);
-
-  useEffect(() => {
-    // Focus the first input when the component mounts
-    inputRefs.current[0].focus();
-  }, []);
 
   const handleInputChange = (text, index) => {
     const updatedOtp = [...otp];
     updatedOtp[index] = text;
-
     setOtp(updatedOtp);
     onOtpChange(updatedOtp.join(""));
-
     if (text !== "" && index < numberOfInputs - 1) {
       inputRefs.current[index + 1].focus();
     }
@@ -30,16 +24,28 @@ const OtpInput = ({ numberOfInputs = 6, onOtpChange }) => {
     }
   };
 
+  useEffect(() => {
+    const allFieldsFilled = otp.every((value) => value !== "");
+    if (allFieldsFilled) {
+      Keyboard.dismiss();
+    }
+  }, [otp]);
+
   const renderInput = (_, index) => (
     <View key={index} style={styles.inputContainer}>
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          otp[index] !== "" && styles.inputFilled, // Apply inputFilled style if there's input
+          focusedInput === index && styles.inputFocused, // Apply inputFocused style if focused
+        ]}
         value={otp[index]}
         onChangeText={(text) => handleInputChange(text, index)}
         keyboardType="numeric"
         maxLength={1}
         ref={(ref) => (inputRefs.current[index] = ref)}
-        onFocus={() => inputRefs.current[index].clear()}
+        onFocus={() => setFocusedInput(index)} // Update focused input on focus event
+        onBlur={() => setFocusedInput(-1)} // Reset focused input on blur event
         onKeyPress={({ nativeEvent: { key } }) => {
           if (key === "Backspace") {
             focusPrevInput(index);
@@ -76,6 +82,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     color: COLORS.dark,
+  },
+  inputFilled: {
+    borderColor: "lightblue", // Change border color when filled
+  },
+  inputFocused: {
+    borderColor: "blue", // Change border color when focused
   },
   line: {
     height: 1,

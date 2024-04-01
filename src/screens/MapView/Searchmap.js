@@ -181,18 +181,33 @@ const LocationMapScreen = () => {
         <View style={styles.container}>
           <View style={styles.searchContainer}>
             <Text style={styles.searchLabelText}>Search</Text>
+            <AntDesign
+              name="search1"
+              size={24}
+              color="gray"
+              style={styles.searchIcon}
+            />
             <TextInput
               style={[
                 styles.searchInput,
                 isSearchFocused && styles.searchInputActive,
-                { minWidth: 200 },
+                { minWidth: 300 },
               ]}
-              placeholder="Search by business name or services..."
+              placeholder="search by business name or services"
+              placeholderTextColor="gray" // Change placeholder color
               onChangeText={(text) => setSearchQuery(text)}
               value={searchQuery}
               onFocus={() => setIsSearchFocused(true)}
               onBlur={() => setIsSearchFocused(false)}
             />
+            {searchQuery.length > 0 && ( // Show clear button when there's text in the search field
+              <TouchableOpacity
+                style={styles.clearButton}
+                onPress={() => setSearchQuery("")}
+              >
+                <AntDesign name="close" size={20} color="gray" />
+              </TouchableOpacity>
+            )}
           </View>
           {mapLoading ? (
             <ActivityIndicator
@@ -312,6 +327,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 5,
     padding: 10,
+    paddingLeft: 40,
   },
   map: {
     flex: 1,
@@ -366,6 +382,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     zIndex: 999,
+  },
+  searchIcon: {
+    position: "absolute",
+    left: 15,
+    top: "65%",
+    //    transform: [{ translateY: -12 }],
+  },
+  clearButton: {
+    position: "absolute",
+    right: 15,
+    top: "30%",
+    transform: [{ translateY: -12 }], // Adjust the vertical position
   },
 });
 

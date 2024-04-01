@@ -77,7 +77,7 @@ const LoginByPhoneNumber = ({ setUserId, navigation }) => {
 
         if (response.status === 200) {
           setVerificationID("YOUR_VERIFICATION_ID_HERE"); // Set your verification ID here
-          setInfo("Verification code has been sent to your phone");
+          setInfo(`Verification code sent to ${fullPhoneNumber}`);
           startCountdown();
         } else {
           setInfo("Failed to send verification code");
@@ -164,6 +164,8 @@ const LoginByPhoneNumber = ({ setUserId, navigation }) => {
       }
     } catch (error) {
       console.error("Error verifying verification code:", error);
+      setInfo(<Text style={styles.errorText}>OTP is not correct</Text>);
+
       // Handle error
     } finally {
       setVerifyLoading(false);
@@ -339,9 +341,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   infoText: {
-    color: "red",
+    color: COLORS.chapa,
     fontSize: 16,
     padding: 10,
+    paddingBottom: 20,
     borderRadius: 5,
     textAlign: "center",
   },

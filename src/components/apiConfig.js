@@ -1,3 +1,3 @@
 // apiConfig.js
 
-export const API_URL = "http://137.184.2.74:80";
+export const API_URL = "https://server.midobooking.com";

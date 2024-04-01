@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "444857689757",
+    "project_id": "mido-6da6b",
+    "storage_bucket": "mido-6da6b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444857689757:android:934306bef744eff5085674",
+        "android_client_info": {
+          "package_name": "com.midobooking.MidoCustomer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBd0WWl0USJKeYjIhy_fRIq3c5Rx99RoME"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

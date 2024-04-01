@@ -16,6 +16,7 @@ import Modal from "react-native-modal";
 import COLORS from "../../consts/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
+
 import {
   getFirestore,
   collection,
@@ -56,15 +57,17 @@ export default function Appointments({ route }) {
           setBookingsList([]);
         } else {
           const currentDate = new Date();
-          const formattedCurrentDate = formatDate(currentDate);
-
           const bookings = querySnapshot.docs
             .map((doc) => ({
-              id: doc.id, // Make sure to include the document ID as 'id'
+              id: doc.id,
               ...doc.data(),
             }))
             .filter((booking) => {
-              return booking.selectedCalendar >= formattedCurrentDate;
+              const selectedDateParts = booking.selectedCalendar.split("/");
+              const selectedDate = new Date(
+                `${selectedDateParts[2]}-${selectedDateParts[1]}-${selectedDateParts[0]}`
+              );
+              return selectedDate >= currentDate;
             })
             .map((booking) => ({
               key: booking.id,
@@ -169,14 +172,66 @@ export default function Appointments({ route }) {
       if (response.status === 200) {
         const selectedBooking = response.data;
 
-        navigation.navigate("EmployeeList", {
-          sourceComponent: "Appointments",
-          userId: selectedBooking.businessOwnerId,
-          serviceDuration: selectedBooking.serviceDuration,
-          selectedServiceNames: selectedBooking.services,
-          totalPrice: selectedBooking.totalPrice,
-          selectedBookingId: bookingItem.id,
-        });
+        // Check if selectedBooking exists and has a valid createdAt timestamp
+        if (
+          selectedBooking &&
+          selectedBooking.createdAt &&
+          selectedBooking.createdAt._seconds
+        ) {
+          // Reconstruct the timestamp from _seconds and _nanoseconds
+          const timestamp = new Date(
+            selectedBooking.createdAt._seconds * 1000 +
+              selectedBooking.createdAt._nanoseconds / 1000000
+          );
+
+          // Get the booking date and time
+          const bookingDateParts = selectedBooking.selectedCalendar.split("/");
+          const bookingDate = new Date(
+            `${bookingDateParts[2]}-${bookingDateParts[1]}-${bookingDateParts[0]}`
+          ); // Assuming the format is "YYYY-MM-DD"
+
+          const bookingTimeParts = selectedBooking.selectedTimeSlot.split(":");
+          const bookingTime = new Date(bookingDate);
+          bookingTime.setHours(parseInt(bookingTimeParts[0]));
+          bookingTime.setMinutes(parseInt(bookingTimeParts[1]));
+
+          // Calculate the reschedule time (booking time - 1 hour)
+          const rescheduleTime = new Date(
+            bookingTime.getTime() - 60 * 60 * 1000
+          ); // Subtracting one hour in milliseconds
+
+          // Get the current date and time
+          const currentTime = new Date();
+
+          // Check if the current date is before or equal to the booking date and if the current time is before or equal to the reschedule time
+          if (currentTime <= bookingDate && currentTime <= rescheduleTime) {
+            // Allow rescheduling
+            navigation.navigate("EmployeeList", {
+              sourceComponent: "Appointments",
+              userId: selectedBooking.businessOwnerId,
+              serviceDuration: selectedBooking.serviceDuration,
+              selectedServiceNames: selectedBooking.services,
+              totalPrice: selectedBooking.totalPrice,
+              selectedBookingId: bookingItem.id,
+            });
+          } else {
+            // Display an alert message that the booking cannot be rescheduled
+            Alert.alert(
+              "Cannot Reschedule Booking",
+              "You can only reschedule your booking up to one hour before its original scheduled time.",
+              [
+                {
+                  text: "OK",
+                  style: "cancel",
+                },
+              ]
+            );
+          }
+        } else {
+          console.error(
+            "Selected booking or its createdAt timestamp is undefined or invalid."
+          );
+        }
       } else {
         console.error(`Unexpected status code: ${response.status}`);
       }
@@ -185,10 +240,10 @@ export default function Appointments({ route }) {
       // You might want to handle the error appropriately, e.g., show an error message
     } finally {
       setModalVisible(false);
-
-      //setLoadingUserData(false);
+      setLoading(false);
     }
   };
+
   const getTimePeriod = (time) => {
     if (!time) {
       return { period: "", time: "" }; // Return empty values if time is undefined
@@ -199,9 +254,9 @@ export default function Appointments({ route }) {
     let period;
 
     if (hours >= 0 && hours < 12) {
-      period = hours < 6 ? "Morning" : "Afternoon";
+      period = hours < 6 ? "AM (Morning)" : "AM (Afternoon)";
     } else {
-      period = "Evening";
+      period = "AM (Evening)";
     }
 
     const formattedHours = hours % 12 === 0 ? 12 : hours % 12; // Convert hours to 12-hour format
@@ -287,6 +342,9 @@ export default function Appointments({ route }) {
         onBackButtonPress={closeModal}
       >
         <View style={styles.modalContainer}>
+          <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+            <Ionicons name="close" size={34} color={COLORS.dark} />
+          </TouchableOpacity>
           <Text style={styles.label}>Selected Salon</Text>
           <Text style={styles.value}>{selectedBooking?.businessName}</Text>
 
@@ -309,10 +367,7 @@ export default function Appointments({ route }) {
           <Text style={styles.value}>
             {selectedBooking?.totalPrice / 2} Birr
           </Text>
-          <Text style={styles.label}>Booking Fee </Text>
-          <Text style={styles.value}>
-            {(selectedBooking?.totalPrice * 0.015).toFixed(2)} Birr
-          </Text>
+
           <View style={styles.buttonContainer}>
             {selectedBooking?.payment ? (
               <TouchableOpacity
@@ -578,5 +633,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
+  },
+  closeButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
   },
 });

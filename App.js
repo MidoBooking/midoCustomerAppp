@@ -14,21 +14,28 @@ import LoggedInStack from "./src/Stack/LoggedInStack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LocationHandler from "./src/components/LocationHandler";
 import { locationStore, locationReducer } from "./src/redux/locationStore";
+import { pushNotificationReducer } from "./src/redux/pushNotificationStore";
+import NotificationManager from "./src/components/NotificationManager";
+import UpdateChecker from "./src/components/UpdateChecker";
 LogBox.ignoreAllLogs();
 
 const rootReducer = combineReducers({
   user: userIdReducer,
   location: locationReducer,
+  pushNotification: pushNotificationReducer,
 });
 const rootStore = createStore(rootReducer);
 const App = () => {
   return (
     <Provider store={rootStore}>
       <InternetStatusChecker>
-        <LocationHandler />
-        <NavigationContainer>
-          <LoggedInStack />
-        </NavigationContainer>
+        <UpdateChecker>
+          <LocationHandler />
+          <NotificationManager />
+          <NavigationContainer>
+            <LoggedInStack />
+          </NavigationContainer>
+        </UpdateChecker>
       </InternetStatusChecker>
     </Provider>
   );

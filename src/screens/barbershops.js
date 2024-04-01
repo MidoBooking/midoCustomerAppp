@@ -67,6 +67,7 @@ const App = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const navigation = useNavigation();
   const userLocation = useSelector((state) => state.location.location);
+
   const [hasMoreItems, setHasMoreItems] = useState(true);
 
   // Inside fetchUsers function

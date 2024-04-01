@@ -80,17 +80,12 @@ const TeleBirrPayment = () => {
       console.log("final Payment is", finalPayment);
       const payload = {
         nonce: nonce,
-        totalAmount: halfTotalPrice + serviceFee,
+        totalAmount: halfTotalPrice,
         outTradeNo: outTradeNo,
         receiveName: "BOLD TECHNOLOGIES",
         returnApp: `${API_URL}/notifyUrl`,
         returnUrl: `${API_URL}/notifyUrl`,
-        subject:
-          "Half payment for " +
-          selectedServices.join(", ") +
-          " (including booking fee) " +
-          serviceFee +
-          " Birr",
+        subject: "Half payment for " + selectedServices.join(", "),
 
         bookingId: bookingId,
       };

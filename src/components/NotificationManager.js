@@ -1,62 +1,38 @@
 // NotificationManager.js
-
-import { useEffect, useRef, Alert } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Text, View, Button, Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+import { setPushNotification } from "../redux/pushNotificationStore";
+import { useDispatch } from "react-redux";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
+export default function NotificationManager() {
+  const dispatch = useDispatch();
 
-export const useNotificationManager = () => {
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
-
-  useEffect(() => {
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        if (
-          notification.request.content.data &&
-          notification.request.content.data.type === "inbox_message"
-        ) {
-          displayInAppMessage(notification.request.content.data);
-        }
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {});
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
-
-  const displayInAppMessage = (data) => {
-    // Example: Show an alert for simplicity
-    // Alert.alert("In-App Message", data.body);
-  };
-
-  async function schedulePushNotification() {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "You've got mail! 📬",
-        body: "Here is the notification body",
-        data: { type: "inbox_message", body: "Custom in-app message" },
-        imageUrl: "https://www.w3schools.com/css/ocean.jpg",
-      },
-      trigger: { seconds: 10 },
-    });
-  }
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
 
   async function registerForPushNotificationsAsync() {
     let token;
+
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
 
     if (Device.isDevice) {
       const { status: existingStatus } =
@@ -66,20 +42,43 @@ export const useNotificationManager = () => {
         const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
       }
-      if (finalStatus === "granted") {
-        token = (await Notifications.getExpoPushTokenAsync()).data;
-      } else {
-        console.warn("Failed to get push token for push notification!");
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
       }
+      token = await Notifications.getExpoPushTokenAsync({
+        projectId: Constants.expoConfig.extra.eas.projectId,
+      });
+      console.log(token);
+
+      dispatch(setPushNotification(token));
     } else {
-      console.warn("Must use a physical device for Push Notifications");
+      alert("Must use physical device for Push Notifications");
     }
 
-    return token;
+    return token.data;
   }
 
-  return {
-    schedulePushNotification,
-    registerForPushNotificationsAsync,
-  };
-};
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+}

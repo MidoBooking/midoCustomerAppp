@@ -227,7 +227,7 @@ const HomeScreen = () => {
     {
       id: 4,
       title: "Makeup",
-      image: require("./assets/Homepage/makeUp.png"),
+      image: require("./assets/Homepage/make-up.jpg"),
     },
     {
       id: 5,

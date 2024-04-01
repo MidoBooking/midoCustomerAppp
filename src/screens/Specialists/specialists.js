@@ -28,7 +28,10 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 const ServiceProviderList = () => {
   const userId = useSelector((state) => state.user.userId);
-
+  const expoPushToken = useSelector(
+    (state) => state.pushNotification.pushNotification.data
+  );
+  console.log("expo push token", expoPushToken);
   const [serviceProviders, setServiceProviders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingBooking, setIsLoadingBooking] = useState(false);
@@ -237,16 +240,16 @@ const ServiceProviderList = () => {
     let labelColor;
 
     if (hour >= 0 && hour < 6) {
-      label = "ጠዋት";
+      label = "AM";
       labelColor = "#FFA500";
     } else if (hour >= 6 && hour < 12) {
-      label = "ከሰአት";
+      label = "AM";
       labelColor = "#2E8B57"; // Change this to your desired color
     } else if (hour >= 12 && hour < 18) {
-      label = "ምሽት";
+      label = "PM";
       labelColor = "#DC143C";
     } else {
-      label = "ሌሊት";
+      label = "PM";
       labelColor = "#483D8B";
     }
 
@@ -422,6 +425,7 @@ const ServiceProviderList = () => {
           serviceDuration,
           userLocation: location,
           imageUrl,
+          expoPushToken,
         });
 
         // Check for double booking
@@ -500,18 +504,15 @@ const ServiceProviderList = () => {
       const formattedEndTime = getFormattedTime(endTime);
 
       // Make HTTP request to update booking
-      await axios.put(
-        `https://server.bafta.co:443/editBooking/${selectedBookingId}`,
-        {
-          selectedServiceProviderId: selectedServiceProvider.serviceProviderId,
-          selectedDate: selectedDay,
-          selectedCalendar,
-          selectedBookingId,
-          selectedTimeSlot,
-          serviceDuration,
-          formattedEndTime,
-        }
-      );
+      await axios.put(`${API_URL}/editBooking/${selectedBookingId}`, {
+        selectedServiceProviderId: selectedServiceProvider.serviceProviderId,
+        selectedDate: selectedDay,
+        selectedCalendar,
+        selectedBookingId,
+        selectedTimeSlot,
+        serviceDuration,
+        formattedEndTime,
+      });
 
       // Handle success
 
@@ -823,7 +824,9 @@ const ServiceProviderList = () => {
           </View>
         )}
         <View style={styles.timeSlotsContainer}>
-          <Text style={styles.sectionTitle}>Available Slot</Text>
+          <Text style={styles.sectionTitle}>
+            Available Slot - Ethiopian Calendar
+          </Text>
 
           {timeSlotRows.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.timeSlotsRow}>
