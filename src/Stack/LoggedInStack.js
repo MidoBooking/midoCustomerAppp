@@ -44,6 +44,7 @@ import SearchMapScreen from "../screens/MapView/SearchMapScreen";
 import teleBirrPayment from "../screens/Payment/teleBirrPayment";
 import LocationMapScreen from "../screens/MapView/Searchmap";
 import servicePorviderOnMapScreen from "../screens/MapView/ServiceProviderLocationOnMap";
+import SampleDetailsScreen from "../screens/DetailScreen.js/SampleDetailsScreen";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const LocationHandler = () => {
@@ -195,6 +196,10 @@ const LoggedInStack = ({ setUserId }) => {
         <Stack.Screen name="HandandFoot" component={HandandFootUsers} />
 
         <Stack.Screen name="UserDetails" component={UserDetailsScreen} />
+        <Stack.Screen
+          name="SampleDetailsScreen"
+          component={SampleDetailsScreen}
+        />
         <Stack.Screen name="EmployeeList" component={EmployeeList} />
         <Stack.Screen name="Congratulations" component={Congratulations} />
         <Stack.Screen name="confirmation" component={Confirmation} />

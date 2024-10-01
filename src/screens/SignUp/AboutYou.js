@@ -135,22 +135,26 @@ function AboutYou() {
           {errorMessage ? (
             <Text style={styles.error}>{errorMessage}</Text>
           ) : null}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Name"
+              value={name}
+              onChangeText={setName}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Select</Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Name"
-            value={name}
-            onChangeText={setName}
-          />
-
-          <TouchableOpacity onPress={showGenderModal} style={styles.input}>
-            {gender ? (
-              <Text>{gender}</Text>
-            ) : (
-              <Text style={styles.placeholderText}>Select Gender</Text>
-            )}
-          </TouchableOpacity>
-
+            <TouchableOpacity onPress={showGenderModal} style={styles.input}>
+              {gender ? (
+                <Text>{gender}</Text>
+              ) : (
+                <Text style={styles.placeholderText}>Select Gender</Text>
+              )}
+            </TouchableOpacity>
+          </View>
           <Modal
             isVisible={isGenderModalVisible}
             onBackdropPress={hideGenderModal}
@@ -175,31 +179,32 @@ function AboutYou() {
               </TouchableOpacity>
             </View>
           </Modal>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Birth Date</Text>
+            {!isPickerShow && (
+              <View style={styles.btnContainer}>
+                <TouchableOpacity
+                  onPress={showPicker}
+                  style={styles.selectDateButton}
+                >
+                  <Text style={styles.selectDateButtonText}>
+                    {dateOfBirth.toLocaleDateString()}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
 
-          {!isPickerShow && (
-            <View style={styles.btnContainer}>
-              <TouchableOpacity
-                onPress={showPicker}
-                style={styles.selectDateButton}
-              >
-                <Text style={styles.selectDateButtonText}>
-                  {dateOfBirth.toLocaleDateString()}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
-
-          {isPickerShow && (
-            <DateTimePicker
-              value={dateOfBirth}
-              mode={"date"}
-              display="spinner"
-              is24Hour={true}
-              onChange={onChange}
-              style={styles.datePicker}
-            />
-          )}
-
+            {isPickerShow && (
+              <DateTimePicker
+                value={dateOfBirth}
+                mode={"date"}
+                display="spinner"
+                is24Hour={true}
+                onChange={onChange}
+                style={styles.datePicker}
+              />
+            )}
+          </View>
           <TouchableOpacity onPress={handleRegister} style={styles.registerBtn}>
             {loading ? (
               <ActivityIndicator color="white" size="small" />
@@ -236,14 +241,27 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     alignSelf: "center",
   },
+  inputContainer: {
+    flexDirection: "column",
+    marginBottom: 20,
+  },
+
   input: {
+    width: "80%", // Take up 80% of the width
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
     padding: 12,
-    marginVertical: 8,
-    alignSelf: "center",
-    width: "80%",
+    marginTop: 8, // Add some spacing between label and input
+    alignSelf: "center", // Align input in the center of the container
+  },
+
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+    color: COLORS.dark,
+    fontWeight: "bold",
+    marginLeft: 40,
   },
   error: {
     color: "red",

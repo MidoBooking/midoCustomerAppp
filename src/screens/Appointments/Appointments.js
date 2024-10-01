@@ -8,6 +8,7 @@ import {
   Image,
   Alert,
   Linking,
+  Button,
 } from "react-native";
 import Constants from "expo-constants";
 import { useSelector } from "react-redux";
@@ -30,7 +31,7 @@ import fbConfig from "../../firebase";
 import { initializeApp } from "firebase/app";
 import axios from "axios";
 import WebView from "react-native-webview";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import DistanceCalculator from "../../components/DistanceCalculator";
 
 const app = initializeApp(fbConfig);
@@ -41,9 +42,91 @@ export default function Appointments({ route }) {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const navigation = useNavigation();
 
-  const userId = useSelector((state) => state.user.userId);
+  // const userId = useSelector((state) => state.user.userId);
+  const userId = "2WTmB1OoKfOwsbGAZbD5xGcztil1";
   const handleSearchPress = () => {
     navigation.navigate("Search");
+  };
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  //const [showSnackbar, setShowSnackbar] = useState(true); // State to control snackbar visibility
+
+  const { showSnackbar: shouldShowSnackbar, businessName } = route.params || {};
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  // Snackbar Component defined inside your main component
+  const Snackbar = ({
+    message,
+    actionText,
+    onActionPress,
+    duration = 3000,
+    position = "bottom",
+    backgroundColor = "#2E67F8", // Default background color
+    textColor = "white", // Default text color
+    actionTextColor = "white", // Default action text color
+  }) => {
+    if (!snackbarVisible) return null;
+
+    return (
+      <View
+        style={{
+          padding: 16,
+          borderRadius: 4,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          position: "absolute",
+          left: 0,
+          right: 0,
+          [position]: 15,
+          backgroundColor,
+        }}
+      >
+        <Text style={{ color: textColor, fontSize: 16 }}>{message}</Text>
+        {actionText && (
+          <TouchableOpacity onPress={onActionPress}>
+            <Text
+              style={{ color: actionTextColor, marginLeft: 8, fontSize: 14 }}
+            >
+              {actionText}
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  };
+
+  useEffect(() => {
+    if (shouldShowSnackbar && businessName) {
+      // Set the Snackbar message including the business name
+
+      setSnackbarVisible(true);
+
+      // Set a timeout to hide the Snackbar after 5 seconds
+      const timeout = setTimeout(() => {
+        setSnackbarVisible(false);
+        // Here you might want to reset the local conditions
+        // that mimic clearing `shouldShowSnackbar` and `businessName`
+        navigation.setParams({ showSnackbar: false, businessName: undefined });
+      }, 5000);
+
+      // Clean up the timeout to prevent memory leaks
+      return () => clearTimeout(timeout);
+    } else if (shouldShowSnackbar) {
+      // If there's no business name but should show snackbar is true
+
+      setSnackbarVisible(true);
+      const timeout = setTimeout(() => {
+        setSnackbarVisible(false);
+        // Reset conditions here as well
+        navigation.setParams({ showSnackbar: false, businessName: undefined });
+      }, 5000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [shouldShowSnackbar, businessName, navigation]);
+
+  const handleActionPress = () => {
+    setSnackbarVisible(false); // Hide the snackbar
   };
   const fetchData = () => {
     const userBookingsRef = collection(getFirestore(app), "bookings");
@@ -57,6 +140,7 @@ export default function Appointments({ route }) {
           setBookingsList([]);
         } else {
           const currentDate = new Date();
+          const formattedCurrentDate = formatDate(currentDate); // Format current date
           const bookings = querySnapshot.docs
             .map((doc) => ({
               id: doc.id,
@@ -67,7 +151,8 @@ export default function Appointments({ route }) {
               const selectedDate = new Date(
                 `${selectedDateParts[2]}-${selectedDateParts[1]}-${selectedDateParts[0]}`
               );
-              return selectedDate >= currentDate;
+              const formattedSelectedDate = formatDate(selectedDate); // Format selected date
+              return formattedSelectedDate >= formattedCurrentDate; // Compare dates
             })
             .map((booking) => ({
               key: booking.id,
@@ -94,21 +179,24 @@ export default function Appointments({ route }) {
     );
     return () => unsubscribe();
   };
+
+  // Function to format date as "dd/mm/yyyy"
+
   const handleRejection = async () => {
     if (!selectedBooking) {
       return; // No appointment selected, handle accordingly
     }
 
     Alert.alert(
-      "Confirm Deletion",
-      "Are you sure you want to delete this booking?",
+      "Confirm Cancelation",
+      "Are you sure you want to cancel this booking?",
       [
         {
           text: "Cancel",
           style: "cancel",
         },
         {
-          text: "Delete",
+          text: "Yes",
           onPress: async () => {
             const userBookingsRef = collection(getFirestore(app), "bookings");
 
@@ -256,7 +344,7 @@ export default function Appointments({ route }) {
     if (hours >= 0 && hours < 12) {
       period = hours < 6 ? "AM (Morning)" : "AM (Afternoon)";
     } else {
-      period = "AM (Evening)";
+      period = "PM (Evening)";
     }
 
     const formattedHours = hours % 12 === 0 ? 12 : hours % 12; // Convert hours to 12-hour format
@@ -268,6 +356,7 @@ export default function Appointments({ route }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>My Appointments</Text>
+
       <FlatList
         data={bookingsList}
         renderItem={({ item }) => (
@@ -321,7 +410,7 @@ export default function Appointments({ route }) {
         ListEmptyComponent={() => (
           <View style={styles.noAppointmentsContainer}>
             <Text style={styles.noAppointmentsHeader}>
-              No Upcomming Appointments
+              No Upcoming Appointments
             </Text>
             <Text style={styles.noAppointmentsText}>
               Your upcoming appointments will appear when you book.
@@ -381,7 +470,7 @@ export default function Appointments({ route }) {
                 style={styles.cancelButton}
                 onPress={handleRejection}
               >
-                <Text style={styles.buttonText}>Delete</Text>
+                <Text style={styles.buttonText}>Cancel</Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity
@@ -410,6 +499,26 @@ export default function Appointments({ route }) {
           </View>
         </View>
       </Modal>
+      {snackbarVisible && (
+        <Snackbar
+          message={
+            <Text>
+              Booking successful! {"\n"}
+              {businessName} will confirm shortly.
+            </Text>
+          }
+          actionText="Dismiss"
+          onActionPress={handleActionPress}
+          duration={5000} // Customize duration
+          position="bottom" // Change the position to 'top'/'bottom'
+          backgroundColor={COLORS.dark}
+          textColor="white" // Change text color
+          actionTextColor="white" // Customize action text color
+          containerStyle={{ marginHorizontal: 12 }} // Apply additional styling
+          messageStyle={{ fontSize: 18 }} // Adjust message text styling
+          actionTextStyle={{ fontWeight: "bold" }} // Customize action text styling
+        />
+      )}
     </View>
   );
 }

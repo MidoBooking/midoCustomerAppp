@@ -13,6 +13,7 @@ const COLORS = {
   statusbar: "#f5f5f5",
   chapa: "#0D1C33",
   updateNow: "#0D1C33",
+  infoColor: "#0D1C33",
 };
 
 export default COLORS;

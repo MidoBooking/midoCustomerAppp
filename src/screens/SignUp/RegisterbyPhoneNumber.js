@@ -83,7 +83,11 @@ const RegisterbyPhoneNumber = ({ setUserId }) => {
         );
 
         if (response.status === 200) {
-          setInfo("Verification code has been sent to your phone");
+          setInfo(
+            <Text style={styles.verificaitonCode}>
+              Verification code sent to {fullPhoneNumber}
+            </Text>
+          );
           setVerificationID(true); // <-- Here we should set verificationId to true
           startCountdown();
         } else {
@@ -167,7 +171,7 @@ const RegisterbyPhoneNumber = ({ setUserId }) => {
         setUserId(userId); // Update userId in Redux state
         console.log("user id from register is", userId);
         // In the source component where you're navigating from
-        navigation.navigate("AboutYou");
+        navigation.replace("AboutYou");
       } else {
         // Verification failed
         console.log("Verification failed");
@@ -301,6 +305,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignSelf: "center",
   },
+  verificaitonCode: {
+    color: COLORS.approvedBookingColor,
+    fontSize: 16,
+    padding: 10,
+    borderRadius: 5,
+    textAlign: "center",
+  },
   errorText: {
     color: COLORS.warning,
     fontSize: 16,
@@ -360,7 +371,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   registerLink: {
-    color: "#003f5c",
+    color: "#007bff",
     fontWeight: "bold",
     fontSize: 16,
   },

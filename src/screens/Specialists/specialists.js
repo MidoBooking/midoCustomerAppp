@@ -26,8 +26,10 @@ import { useNavigation } from "@react-navigation/native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import Snackbar from "../../components/SnackBar";
 const ServiceProviderList = () => {
-  const userId = useSelector((state) => state.user.userId);
+  //const userId = useSelector((state) => state.user.userId);
+  const userId = "2WTmB1OoKfOwsbGAZbD5xGcztil1";
   const expoPushToken = useSelector(
     (state) => state.pushNotification.pushNotification.data
   );
@@ -241,16 +243,16 @@ const ServiceProviderList = () => {
 
     if (hour >= 0 && hour < 6) {
       label = "AM";
-      labelColor = "#FFA500";
+      labelColor = "#9C27B0";
     } else if (hour >= 6 && hour < 12) {
       label = "AM";
       labelColor = "#2E8B57"; // Change this to your desired color
     } else if (hour >= 12 && hour < 18) {
       label = "PM";
-      labelColor = "#DC143C";
+      labelColor = "#9C27B0";
     } else {
       label = "PM";
-      labelColor = "#483D8B";
+      labelColor = "#2E8B57";
     }
 
     return { formattedTime, label, labelColor };
@@ -427,6 +429,8 @@ const ServiceProviderList = () => {
           imageUrl,
           expoPushToken,
         });
+        // Log the booking data
+        console.log("Booking Data:", bookingData);
 
         // Check for double booking
         // Check for double booking
@@ -574,9 +578,12 @@ const ServiceProviderList = () => {
 
           // Optionally, you can navigate to a confirmation screen or display a success message.
           sendSms();
-          navigation.navigate("Congratulations", {
-            businessName: bookingData.businessName,
+
+          navigation.navigate("Appointments", {
+            showSnackbar: true,
+            businessName: businessName, // Assuming businessName is defined in your component
           });
+          console.log("business name is", businessName);
         })
         .catch((error) => {
           console.error("Error making the booking:", error);
@@ -601,6 +608,7 @@ const ServiceProviderList = () => {
           <ActivityIndicator size="large" color={COLORS.white} />
         </View>
       )}
+
       <Modal
         isVisible={isConfirmationModalVisible}
         onBackdropPress={closeModal}
@@ -694,6 +702,7 @@ const ServiceProviderList = () => {
           </TouchableOpacity>
           <Text style={styles.pageTitle}>Select Specialist</Text>
         </View>
+
         <FlatList
           data={serviceProviders}
           keyExtractor={(item) => item.serviceProviderId}
@@ -825,7 +834,7 @@ const ServiceProviderList = () => {
         )}
         <View style={styles.timeSlotsContainer}>
           <Text style={styles.sectionTitle}>
-            Available Slot - Ethiopian Calendar
+            Available Slot - Ethiopian Time
           </Text>
 
           {timeSlotRows.map((row, rowIndex) => (

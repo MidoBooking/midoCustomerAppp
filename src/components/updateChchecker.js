@@ -77,7 +77,6 @@ const UpdateStatusChecker = ({ children }) => {
       {isChecking ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="black" />
-          <Text style={styles.loadingText}>Checking for updates...</Text>
         </View>
       ) : isUpdateAvailable ? (
         <Modal visible={true} animationType="slide" transparent>

@@ -23,9 +23,9 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.midobooking.MidoCustomer",
+      "package": "com.midobooking.customer",
       "googleServicesFile": "./google-services.json",
-      "versionCode": "1",
+      "versionCode": "3",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyAUe76yQq5_3m_OVGhYa_gYvnZ2YsCuB6M"
@@ -37,7 +37,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "413a1790-e706-4332-bb49-2a3a5d046333"
+        "projectId": "65cb1af6-6c6b-4420-a464-d5182351465c"
       }
     }
   }

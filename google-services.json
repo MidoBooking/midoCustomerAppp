@@ -7,9 +7,28 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:444857689757:android:934306bef744eff5085674",
+        "mobilesdk_app_id": "1:444857689757:android:7ef1cc2f5cb10a8f085674",
         "android_client_info": {
-          "package_name": "com.midobooking.MidoCustomer"
+          "package_name": "com.midobooking.business"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBd0WWl0USJKeYjIhy_fRIq3c5Rx99RoME"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444857689757:android:7f398d8dc281937f085674",
+        "android_client_info": {
+          "package_name": "com.midobooking.customer"
         }
       },
       "oauth_client": [],

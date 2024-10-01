@@ -21,6 +21,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import Modal from "react-native-modal"; // Import the react-native-modal library
 import COLORS from "../../consts/colors";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import axios from "axios";
 import { StatusBar } from "expo-status-bar";
 import { API_URL } from "../../components/apiConfig";
@@ -178,17 +179,25 @@ const Profile = ({ route }) => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Ionicons name="arrow-back-outline" size={24} color="black" />
+          <Ionicons name="arrow-back-outline" size={24} color={COLORS.dark} />
         </TouchableOpacity>
 
         <View style={styles.profileContainer}>
           <View style={[styles.border, { borderColor: COLORS.primary }]}>
-            {profilePicture && (
+            {profilePicture ? (
               <Image
                 source={{ uri: profilePicture }}
                 style={styles.profileImage}
               />
+            ) : (
+              <AntDesign
+                name="user"
+                size={155}
+                color="black"
+                style={{ padding: 10 }}
+              />
             )}
+
             <TouchableOpacity
               onPress={() => navigation.navigate("editProfileImage")}
               style={styles.editContainer}

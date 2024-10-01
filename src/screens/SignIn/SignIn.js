@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   registerLink: {
-    color: "#003f5c",
+    color: "#007bff",
     fontWeight: "bold",
     fontSize: 16,
   },

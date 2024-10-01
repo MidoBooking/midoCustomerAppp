@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import COLORS from "../../consts/colors";
 import { StatusBar } from "expo-status-bar";
 import { FontAwesome } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import axios from "axios";
@@ -119,7 +120,12 @@ function SettingScreen({ navigation, route }) {
                     onLoad={() => setLoadingImage(false)}
                   />
                 ) : (
-                  <ActivityIndicator size="large" color={COLORS.primary} />
+                  <AntDesign
+                    name="user"
+                    size={150}
+                    color={COLORS.dark}
+                    style={{ padding: 10 }}
+                  />
                 )}
               </View>
               <Text style={styles.name}>{clientData.name}</Text>

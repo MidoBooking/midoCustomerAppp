@@ -16,7 +16,7 @@ import LocationHandler from "./src/components/LocationHandler";
 import { locationStore, locationReducer } from "./src/redux/locationStore";
 import { pushNotificationReducer } from "./src/redux/pushNotificationStore";
 import NotificationManager from "./src/components/NotificationManager";
-import UpdateChecker from "./src/components/UpdateChecker";
+import UpdateStatusChecker from "./src/components/updateChchecker";
 LogBox.ignoreAllLogs();
 
 const rootReducer = combineReducers({
@@ -29,13 +29,13 @@ const App = () => {
   return (
     <Provider store={rootStore}>
       <InternetStatusChecker>
-        <UpdateChecker>
+        <UpdateStatusChecker>
           <LocationHandler />
           <NotificationManager />
           <NavigationContainer>
             <LoggedInStack />
           </NavigationContainer>
-        </UpdateChecker>
+        </UpdateStatusChecker>
       </InternetStatusChecker>
     </Provider>
   );

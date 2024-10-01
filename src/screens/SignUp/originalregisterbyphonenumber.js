@@ -74,7 +74,11 @@ const RegisterbyPhoneNumber = ({ setUserId }) => {
         recaptchaVerifier.current
       );
       setVerificationID(verificationId);
-      setInfo("Verification code has \n been sent to your phone");
+      setInfo(
+        <Text style={styles.verificaitonCode}>
+          Verification code sent to ${fullPhoneNumber}
+        </Text>
+      );
 
       setResendActive(true);
       const interval = setInterval(() => {
@@ -240,6 +244,13 @@ const styles = StyleSheet.create({
   },
   verificationCodeText: {
     fontSize: 18,
+  },
+  verificaitonCode: {
+    color: COLORS.approvedBookingColor,
+    fontSize: 16,
+    padding: 10,
+    borderRadius: 5,
+    textAlign: "center",
   },
   errorText: {
     color: COLORS.warning,

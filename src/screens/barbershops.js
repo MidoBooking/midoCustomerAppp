@@ -125,6 +125,8 @@ const App = () => {
   // Function to render each user item in the list
   const renderUserItem = ({ item }) => {
     const handleUserDetailsNavigation = () => {
+      console.log("Barbershop Data:", item); // Log the entire barbershop data
+      console.log("Barbershop ID:", item.id);
       navigation.navigate("UserDetails", {
         userData: item,
         distance: item.distance,

@@ -31,9 +31,12 @@ const UserDetailsScreen = ({ route }) => {
 
   const userLocation = useSelector((state) => state.location.location);
   const [mapLocation, setMapLocation] = useState([]);
+  useEffect(() => {
+    console.log("User Data:", userData); //  log userData
+  }, [userData]);
   console.log("service provider latitude", serviceProviderLatitude);
   console.log("service provider longitude", serviceProviderLongitude);
-
+  console.log("user data is", userData.id);
   useEffect(() => {
     if (userLocation && serviceProviderLatitude && serviceProviderLongitude) {
       const origin = `${userLocation.latitude},${userLocation.longitude}`;
@@ -296,27 +299,32 @@ const UserDetailsScreen = ({ route }) => {
               <Text style={styles.bottomBookButtonText}>Book</Text>
             </TouchableOpacity>
           </View>
-        ) : selectedMenuItem === "Portfolio" &&
-          userData.portfolioImages &&
-          userData.portfolioImages.length > 0 ? (
-          <ScrollView
-            horizontal
-            contentContainerStyle={styles.portfolioImagesContainer}
-            showsHorizontalScrollIndicator={false}
-            {...panResponder.panHandlers}
-          >
-            {userData.portfolioImages.map((portfolioImage, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handlePortfolioImagePress(index)}
-              >
-                <Image
-                  source={{ uri: portfolioImage }}
-                  style={styles.portfolioImage}
-                />
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+        ) : selectedMenuItem === "Portfolio" ? (
+          userData.portfolioImages && userData.portfolioImages.length > 0 ? (
+            <ScrollView
+              horizontal
+              contentContainerStyle={styles.portfolioImagesContainer}
+              showsHorizontalScrollIndicator={false}
+              {...panResponder.panHandlers}
+            >
+              {userData.portfolioImages.map((portfolioImage, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    setSelectedImageIndex(index);
+                    setModalVisible(true);
+                  }}
+                >
+                  <Image
+                    source={{ uri: portfolioImage }}
+                    style={styles.portfolioImage}
+                  />
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          ) : (
+            <Text>No portfolio images</Text>
+          )
         ) : (
           selectedMenuItem === "Information" && (
             <View style={styles.container}>
@@ -360,46 +368,46 @@ const UserDetailsScreen = ({ route }) => {
           )
         )}
       </ScrollView>
-
-      <View style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>
-          <Modal
-            transparent={true} // Make modal background transparent
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(false);
-            }}
-          >
-            <TouchableOpacity
-              style={styles.modalBackdrop} // Style to cover the entire screen
-              onPress={() => setModalVisible(false)} // Close modal when backdrop is clicked
-            >
-              <View style={styles.modalContainer}>
+      <Modal
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
+      >
+        <TouchableOpacity
+          style={styles.modalBackdrop}
+          onPress={() => setModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            {userData &&
+              userData.portfolioImages &&
+              userData.portfolioImages.length > 0 && (
                 <Image
                   source={{ uri: userData.portfolioImages[selectedImageIndex] }}
                   style={styles.modalImage}
                   resizeMode="contain"
                 />
+              )}
 
-                <View style={styles.modalButtons}>
-                  <TouchableOpacity
-                    style={styles.prevImageButton}
-                    onPress={handlePrevImage}
-                  >
-                    <Text style={styles.buttonText}>Prev</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.nextImageButton}
-                    onPress={handleNextImage}
-                  >
-                    <Text style={styles.buttonText}>Next</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </TouchableOpacity>
-          </Modal>
-        </View>
-      </View>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.prevImageButton}
+                onPress={handlePrevImage}
+              >
+                <Text style={styles.buttonText}>Prev</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.nextImageButton}
+                onPress={handleNextImage}
+              >
+                <Text style={styles.buttonText}>Next</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
       <TouchableOpacity
         style={styles.mapIconContainer}
         onPress={handleMapIconClick}

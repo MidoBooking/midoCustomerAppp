@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
@@ -26,6 +26,7 @@ const ImageUpload = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const navigation = useNavigation();
   const userId = useSelector((state) => state.user.userId);
+  const [uploadButtonVisible, setUploadButtonVisible] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -50,7 +51,14 @@ const ImageUpload = () => {
 
     if (!result.canceled) {
       setImageURI(result.assets[0].uri);
+      setUploadButtonVisible(true);
     }
+  };
+
+  const skipUpload = () => {
+    // Handle skip functionality here
+    // For now, just navigate away
+    navigation.navigate("Main");
   };
 
   const uploadImage = async () => {
@@ -111,22 +119,42 @@ const ImageUpload = () => {
         <View style={styles.imageContainer}>
           <View style={styles.dottedBox} />
 
-          {imageURI && (
-            <>
-              <Image
-                source={{ uri: imageURI }}
-                style={styles.image}
-                resizeMode="contain"
-              />
-            </>
+          {imageURI ? (
+            <Image
+              source={{ uri: imageURI }}
+              style={styles.image}
+              resizeMode="contain"
+            />
+          ) : (
+            <AntDesign name="user" size={100} color="black" />
           )}
         </View>
-        <TouchableOpacity
-          style={styles.selectImage}
-          onPress={isLoading ? null : selectImage}
-        >
-          <Text style={styles.nextText}>Select Image</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          {!uploadButtonVisible && (
+            <TouchableOpacity
+              style={styles.selectImage}
+              onPress={isLoading ? null : selectImage}
+            >
+              <Text style={styles.buttonText}>Select Image</Text>
+            </TouchableOpacity>
+          )}
+          {uploadButtonVisible && (
+            <TouchableOpacity
+              style={styles.uploadButton}
+              onPress={isLoading ? null : uploadImage}
+              disabled={!imageURI}
+            >
+              {isLoading ? (
+                <ActivityIndicator color="white" size="small" />
+              ) : (
+                <Text style={styles.buttonText}>Upload</Text>
+              )}
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity style={styles.skipButton} onPress={skipUpload}>
+            <Text style={styles.buttonText}>Skip</Text>
+          </TouchableOpacity>
+        </View>
 
         {uploadProgress > 0 && (
           <ProgressBar
@@ -138,18 +166,6 @@ const ImageUpload = () => {
           />
         )}
       </View>
-
-      <TouchableOpacity
-        style={styles.nextBtn}
-        onPress={isLoading ? null : uploadImage}
-        disabled={!imageURI}
-      >
-        {isLoading ? (
-          <ActivityIndicator color="white" size="small" />
-        ) : (
-          <Text style={styles.nextText}>Upload</Text>
-        )}
-      </TouchableOpacity>
     </View>
   );
 };
@@ -179,6 +195,8 @@ const styles = StyleSheet.create({
     position: "relative",
     width: desiredImageWidth,
     height: desiredImageHeight,
+    justifyContent: "center",
+    alignItems: "center",
   },
   image: {
     width: desiredImageWidth,
@@ -195,36 +213,45 @@ const styles = StyleSheet.create({
     borderColor: "black",
     borderRadius: 5,
   },
-  progress: {
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
     marginTop: 20,
   },
-  progressText: {
-    marginTop: 10,
-  },
   selectImage: {
-    width: "90%",
     backgroundColor: COLORS.dark,
     borderRadius: 15,
     height: 50,
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: 10,
-    marginHorizontal: 20,
+    flex: 1,
+    marginRight: 10,
   },
-  nextBtn: {
-    width: "90%",
+  uploadButton: {
     backgroundColor: COLORS.primary,
     borderRadius: 15,
     height: 50,
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: 10,
-    marginHorizontal: 20,
+    flex: 1,
+    marginRight: 10,
   },
-  nextText: {
+  skipButton: {
+    backgroundColor: COLORS.dark,
+    borderRadius: 15,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+  },
+  buttonText: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  progress: {
+    marginTop: 20,
   },
 });
 

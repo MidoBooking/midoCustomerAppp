@@ -43,15 +43,16 @@ const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [bookingsList, setBookingsList] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const userId = useSelector((state) => state.user.userId);
+  //const userId = useSelector((state) => state.user.userId);
+  const userId = "2WTmB1OoKfOwsbGAZbD5xGcztil1";
+
   const [loadingUserData, setLoadingUserData] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
-  const [overlayVisible, setOverlayVisible] = useState(false); // State variable for overlay
+  const [overlayVisible, setOverlayVisible] = useState(false);
 
-  // Function to toggle popup visibility
   const togglePopupVisibility = (visible) => {
     setPopupVisible(visible);
-    setOverlayVisible(visible); // Show/hide overlay accordingly
+    setOverlayVisible(visible);
   };
 
   const formatDate = (date) => {
@@ -254,6 +255,8 @@ const HomeScreen = () => {
   ];
 
   const handleBookingItem = async (bookingItem) => {
+    console.log("my stylist is", bookingItem);
+
     try {
       setLoadingUserData(true);
 
